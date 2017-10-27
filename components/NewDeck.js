@@ -1,0 +1,99 @@
+import React, { Component } from 'react'
+import { StyleSheet, View, Text, InputField, TouchableOpacity, Platform } from 'react-native'
+import { purple, white } from '../utils/colors'
+import * as api from '../utils/api'
+import { connect } from 'react-redux'
+
+class NewDeck extends Component {
+  state = {
+    textInput: ''
+  }
+
+  onAddDeck = () => {
+    if(this.state.textInput === '') {
+      alert('Please type some text')
+      return
+    }
+    api.addDeck(this.state.textInput).then((x) => {
+      console.log(x)
+      // this.props.addPost(this.state.textInput)
+    })
+  }
+
+  render () {
+    console.log(this.state)
+    console.log(this.state.textInput)
+    return (
+      <View style={styles.container}>
+        <View>
+          <Text style={styles.title}>WHAT IS THE TITLE OF YOUR NEW DECK ?</Text>
+        </View>
+        <InputField
+          style={styles.input}
+          inputValue={this.state.textInput}
+          handleTextChange={this.setState({ textInput })}
+          placeholder='Deck Title'
+        />
+        <TouchableOpacity
+          style={Platform.OS === 'ios' ? styles.iosSubmitBtn : styles.AndroidSubmitBtn}
+          onPress={this.onAddDeck}
+          >
+          <Text style={styles.submitBtnText}>SUBMIT</Text>
+        </TouchableOpacity>
+      </View>
+
+    )
+  }
+}
+
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  title: {
+    fontSize: 30,
+    textAlign: 'center',
+  },
+  iosSubmitBtn: {
+    backgroundColor: purple,
+    padding: 10,
+    borderRadius: 7,
+    height: 45,
+    marginLeft: 40,
+    marginRight: 40,
+  },
+  AndroidSubmitBtn: {
+    backgroundColor: purple,
+    padding: 10,
+    paddingLeft: 30,
+    paddingRight: 30,
+    height: 45,
+    borderRadius: 2,
+    alignSelf: 'flex-end',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  submitBtnText: {
+    color: white,
+    fontSize: 22,
+    textAlign: 'center',
+  },
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    width: 300,
+    margin: 10
+  }
+})
+
+function mapDispatchToProps (dispatch) {
+  return {
+// here all the actions are mapped to props.
+    addDeck: (data) => dispatch(addDeck(data)),
+  }
+}
+export default connect(null, mapDispatchToProps)(NewDeck)
