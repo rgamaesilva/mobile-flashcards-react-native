@@ -10,6 +10,8 @@ import reducer from './reducers'
 import DecksList from './components/DecksList'
 import Deck from './components/Deck'
 import NewDeck from './components/NewDeck'
+import NewQuestion from './components/NewQuestion'
+import Quiz from './components/Quiz'
 
 function FlashCardStatusBar ({backgroundColor, ...props}) {
   return (
@@ -60,6 +62,24 @@ const MainNavigator = StackNavigator({
   },
   Deck: {
     screen: Deck,
+    navigationOptions: {
+      headerTintColor: white,
+      headerStyle: {
+        backgroundColor: purple,
+      }
+    }
+  },
+  NewQuestion: {
+    screen: NewQuestion,
+    navigationOptions: {
+      headerTintColor: white,
+      headerStyle: {
+        backgroundColor: purple,
+      }
+    }
+  },
+  Quiz: {
+    screen: Quiz,
     navigationOptions: {
       headerTintColor: white,
       headerStyle: {

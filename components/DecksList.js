@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { View, Text, StyleSheet, ScrollView, FlatList, TouchableOpacity } from 'react-native'
+import { NavigationActions } from 'react-navigation'
 import * as api from '../utils/api'
 import { purple, white, gray } from '../utils/colors'
 import { connect } from 'react-redux'
@@ -12,14 +13,16 @@ class DecksList extends Component {
     return (
       <TouchableOpacity
         key={item.title}
-        onPress={() => this.props.navigation.navigate(
-          'Deck',
-          { title: item.title },
-        )}
+        onPress={() => this.props.navigation.dispatch(NavigationActions.navigate(
+          {
+            routeName: 'Deck',
+            params: { title: item.title }
+          }
+        ))}
         >
         <View style={styles.deck} {...item}>
           <Text style={styles.title}>{item.title}</Text>
-          <Text style={styles.count}>{item.questions.length}</Text>
+          <Text style={styles.count}>{`${item.questions.length} cards`}</Text>
         </View>
       </TouchableOpacity>
     )

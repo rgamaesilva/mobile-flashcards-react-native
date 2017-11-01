@@ -4,50 +4,55 @@ import { NavigationActions } from 'react-navigation'
 import { purple, white } from '../utils/colors'
 import * as api from '../utils/api'
 import { connect } from 'react-redux'
-import { addDeck } from '../actions/deckActions'
+import { addCard } from '../actions/cardActions'
 
-class NewDeck extends Component {
+class NewQuestion extends Component {
   state = {
-    textInput: ''
+    questionInput: '',
+    answerInput: ''
   }
 
-  onAddDeck = () => {
-    if(this.state.textInput === "") {
-      alert('Please type the title of the Deck')
+  onAddQuestion = () => {
+    if(this.state.questionInput === "") {
+      alert('Please type a Question')
       return
+    } else if(this.state.answerInput === "") {
+      alert('Please type an ANSWER')
     }
-    api.addApiDeck(this.state.textInput).then(() => {
-      this.props.addDeck(this.state.textInput)
-      this.props.navigation.dispatch(NavigationActions.navigate(
-        {
-          routeName: 'Deck',
-          params: { title: this.state.textInput }
-        }
-      ))
-      this.setState({ textInput: '' })
+    const card = {question: this.state.questionInput, answer: this.state.answerInput}
+    api.addApiCard(this.props.deck.title, card).then(() => {
+      this.props.addCard(this.props.deck.title, card)
+      this.props.navigation.goBack()
+      this.setState({ questionInput: '', answerInput: ''})
     })
   }
 
   render () {
+    console.log(this.props)
     return (
       <View style={styles.container}>
         <View>
-          <Text style={styles.title}>WHAT IS THE TITLE OF YOUR NEW DECK ?</Text>
+          <Text style={styles.title}>ADD NEW CARD</Text>
         </View>
         <TextInput
           style={styles.input}
           value={this.state.textInput}
-          onChangeText={(text) => this.setState({ textInput: text })}
-          placeholder='Deck Title'
+          onChangeText={(text) => this.setState({ questionInput: text })}
+          placeholder='Type the question here!'
+        />
+        <TextInput
+          style={styles.input}
+          value={this.state.textInput}
+          onChangeText={(text) => this.setState({ answerInput: text })}
+          placeholder='Type the answer here!'
         />
         <TouchableOpacity
           style={Platform.OS === 'ios' ? styles.iosSubmitBtn : styles.AndroidSubmitBtn}
-          onPress={this.onAddDeck}
+          onPress={this.onAddQuestion}
           >
           <Text style={styles.submitBtnText}>SUBMIT</Text>
         </TouchableOpacity>
       </View>
-
     )
   }
 }
@@ -99,8 +104,16 @@ const styles = StyleSheet.create({
 function mapDispatchToProps (dispatch) {
   return {
 // here all the actions are mapped to props.
-    addDeck: (data) => dispatch(addDeck(data)),
+    addCard: (data) => dispatch(addCard(data)),
   }
 }
 
-export default connect(null, mapDispatchToProps)(NewDeck)
+function mapStateToProps ({ decks }, { navigation }) {
+  const decksAsArray = Object.keys(decks).map((title) => (decks[title]))
+  const decksAsArrayFiltered = decksAsArray.filter((deck) => (deck.title === navigation.state.params.title))[0]
+  return {
+    deck: decksAsArrayFiltered,
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(NewQuestion)
