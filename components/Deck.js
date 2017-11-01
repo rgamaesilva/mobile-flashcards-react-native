@@ -1,14 +1,18 @@
-import React from 'react'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { View, Text, StyleSheet } from 'react-native'
-import { purple, white } from '../utils/colors'
+import { purple, white, gray} from '../utils/colors'
 
-const Deck = (props) => {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.deck}>DECK NAME</Text>
-      <Text>CARDS</Text>
-    </View>
-  )
+class Deck extends Component {
+
+  render () {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>{this.props.deck.title}</Text>
+        <Text style={styles.cards}>CARDS</Text>
+      </View>
+    )
+  }
 }
 
 const styles = StyleSheet.create({
@@ -18,38 +22,35 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   deck: {
-    borderRadius: 10,
+    borderRadius: 30,
     borderColor: purple,
-    borderWidth: 10,
+    borderWidth: 2,
+    height: 200,
+    width: 350,
+    alignItems: 'center',
+    justifyContent: 'center',
+    margin: 10
   },
   title: {
     fontSize: 30,
     textAlign: 'center',
+    margin: 10
   },
-  iosSubmitBtn: {
-    backgroundColor: purple,
-    padding: 10,
-    borderRadius: 7,
-    height: 45,
-    marginLeft: 40,
-    marginRight: 40,
-  },
-  AndroidSubmitBtn: {
-    backgroundColor: purple,
-    padding: 10,
-    paddingLeft: 30,
-    paddingRight: 30,
-    height: 45,
-    borderRadius: 2,
-    alignSelf: 'flex-end',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  submitBtnText: {
-    color: white,
-    fontSize: 22,
+  cards: {
+    fontSize: 20,
+    color: gray,
     textAlign: 'center',
+    margin: 10
   }
 })
 
-export default Deck;
+function mapStateToProps ({ decks }, { navigation }) {
+  const decksAsArray = Object.keys(decks).map((title) => (decks[title]))
+  const decksAsArrayFiltered = decksAsArray.filter((deck) => (deck.title === navigation.state.params.title))[0]
+  console.log(decksAsArrayFiltered)
+  return {
+    deck: decksAsArrayFiltered,
+  }
+}
+
+export default connect(mapStateToProps)(Deck);
