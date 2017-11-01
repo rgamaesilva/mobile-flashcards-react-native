@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
-import { StyleSheet, View, Text, InputField, TouchableOpacity, Platform } from 'react-native'
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, Platform } from 'react-native'
 import { purple, white } from '../utils/colors'
 import * as api from '../utils/api'
 import { connect } from 'react-redux'
+import { addDeck } from '../actions/deckActions'
 
 class NewDeck extends Component {
   state = {
@@ -10,28 +11,25 @@ class NewDeck extends Component {
   }
 
   onAddDeck = () => {
-    if(this.state.textInput === '') {
-      alert('Please type some text')
+    if(this.state.textInput === "") {
+      alert('Please type the title of the Deck')
       return
     }
-    api.addDeck(this.state.textInput).then((x) => {
-      console.log(x)
-      // this.props.addPost(this.state.textInput)
+    api.addApiDeck(this.state.textInput).then(() => {
+      this.props.addDeck(this.state.textInput)
     })
   }
 
   render () {
-    console.log(this.state)
-    console.log(this.state.textInput)
     return (
       <View style={styles.container}>
         <View>
           <Text style={styles.title}>WHAT IS THE TITLE OF YOUR NEW DECK ?</Text>
         </View>
-        <InputField
+        <TextInput
           style={styles.input}
-          inputValue={this.state.textInput}
-          handleTextChange={this.setState({ textInput })}
+          value={this.state.textInput}
+          onChangeText={(text) => this.setState({ textInput: text })}
           placeholder='Deck Title'
         />
         <TouchableOpacity
@@ -96,4 +94,5 @@ function mapDispatchToProps (dispatch) {
     addDeck: (data) => dispatch(addDeck(data)),
   }
 }
+
 export default connect(null, mapDispatchToProps)(NewDeck)

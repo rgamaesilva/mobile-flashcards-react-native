@@ -1,16 +1,39 @@
-import React from 'react'
-import { View, Text, StyleSheet } from 'react-native'
+import React, { Component } from 'react'
+import { View, Text, StyleSheet, ScrollView, FlatList } from 'react-native'
+import * as api from '../utils/api'
 import { purple, white, gray } from '../utils/colors'
+import { connect } from 'react-redux'
+import { getAllDecks } from '../actions/deckActions'
 
-const DecksList = (props) => {
-  return (
-    <View style={styles.container}>
-      <View style={styles.deck}>
-        <Text style={styles.title}>DECK NAME</Text>
-        <Text style={styles.count}>XX CARDS</Text>
+class DecksList extends Component {
+
+  renderItem = ({ item }) => {
+    return (
+      <View style={styles.deck} key={item.title} {...item}>
+        <Text style={styles.title}>{item.title}</Text>
+        <Text style={styles.count}>{item.questions.length}</Text>
       </View>
-    </View>
-  )
+    )
+  }
+
+  componentDidMount () {
+    api.getAllDecks().then((results) => {
+      const parsedResults = JSON.parse(results)
+      this.props.getAllDecks(parsedResults)
+    })
+  }
+
+  render () {
+    console.log(this.props)
+    return (
+      <View style={styles.container}>
+        <FlatList
+          data={this.props.decks}
+          renderItem={this.renderItem}
+        />
+      </View>
+    )
+  }
 }
 
 const styles = StyleSheet.create({
@@ -27,6 +50,7 @@ const styles = StyleSheet.create({
     width: 350,
     alignItems: 'center',
     justifyContent: 'center',
+    margin: 10
   },
   title: {
     fontSize: 30,
@@ -40,4 +64,20 @@ const styles = StyleSheet.create({
     margin: 10
   }
 })
-export default DecksList;
+
+function mapStateToProps ({ decks }) {
+  const decksAsArray = Object.keys(decks).map((title) => (decks[title]))
+  return {
+    decks: decksAsArray,
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+// here all the actions are mapped to props.
+    getAllDecks: (data) => dispatch(getAllDecks(data)),
+  }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(DecksList);

@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
-import { StyleSheet, Text, View, TouchableOpacity, Platform, StatusBar } from 'react-native';
+import { StyleSheet, Text, View, Platform, StatusBar } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { Constants } from 'expo'
 import { TabNavigator, StackNavigator } from 'react-navigation'
@@ -70,7 +70,7 @@ const MainNavigator = StackNavigator({
 })
 
 
-export default class App extends React.Component {
+export default class App extends Component {
   render() {
     return (
       <Provider store={createStore(reducer)}>

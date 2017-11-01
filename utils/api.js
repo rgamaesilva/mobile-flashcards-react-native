@@ -1,18 +1,28 @@
 import { AsyncStorage } from 'react-native'
 
-const FLASHCARDS_STORAGE_KEYS = 'Mobileflashcards:deck'
+const FLASHCARDS_STORAGE_KEY = 'Flashcards:deck'
 
-export function getDecks () {
-  return AsyncStorage.getItem(FLASHCARDS_STORAGE_KEYS)
+export function getAllDecks () {
+  return AsyncStorage.getItem(FLASHCARDS_STORAGE_KEY)
 }
 
-export function addDeck(title) {
-  return AsyncStorage.mergeItem(FLASHCARDS_STORAGE_KEYS, JSON.stringify({
+export function addApiDeck(title) {
+  return AsyncStorage.mergeItem(FLASHCARDS_STORAGE_KEY, JSON.stringify({
     [title]: { title, questions: [] }
   }))
 }
 
-//
+export function removeDeck (title) {
+  return AsyncStorage.getItem(FLASHCARDS_STORAGE_KEY)
+    .then((results) => {
+      const data = JSON.parse(results)
+      data[title] = undefined
+      delete data[title]
+      AsyncStorage.setItem(FLASHCARDS_STORAGE_KEY, JSON.stringify(data))
+    })
+}
+
+//export const CALENDAR_STORAGE_KEY = 'UdaciFitness:calendar'
 //
 // {
 //   React: {
