@@ -2,12 +2,11 @@ import React, { Component } from 'react'
 import { View, Text, StyleSheet, ScrollView, FlatList, TouchableOpacity } from 'react-native'
 import { NavigationActions } from 'react-navigation'
 import * as api from '../utils/api'
-import { purple, white, gray } from '../utils/colors'
+import { purple, white, gray, red, black } from '../utils/colors'
 import { connect } from 'react-redux'
 import { getAllDecks } from '../actions/deckActions'
 
 class DecksList extends Component {
-
 //renderItem is what is going to be rendered in FlaList.
   renderItem = ({ item }) => {
     return (
@@ -38,7 +37,7 @@ class DecksList extends Component {
   render () {
     console.log(this.props)
     return (
-      this.props.decks ?
+      this.props.decks.length > 0 ?
       <View style={styles.container}>
         <FlatList
           data={this.props.decks}

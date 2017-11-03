@@ -27,6 +27,16 @@ export function addApiCard (title, card) {
     })
 }
 
+export function removeDeck (title) {
+  return AsyncStorage.getItem(FLASHCARDS_STORAGE_KEY)
+    .then((results) => {
+      const decks = JSON.parse(results)
+      decks[title] = undefined
+      delete decks[title]
+      AsyncStorage.setItem(FLASHCARDS_STORAGE_KEY, JSON.stringify(decks))
+    })
+}
+
 //export const CALENDAR_STORAGE_KEY = 'UdaciFitness:calendar'
 //
 // {
