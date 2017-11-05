@@ -1,45 +1,58 @@
 import React, { Component } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native'
 import { connect } from 'react-redux'
-import { quizChange } from '../actions/quizActions'
+import { NavigationActions } from 'react-navigation'
+import { quizChangeCorrect, quizChangeCardCount, quizChangeScore, quizChangeQuestionState } from '../actions/quizActions'
 import { purple, white, gray, black, red, green } from '../utils/colors'
 
 class Quiz extends Component {
 
   onChangeCard = (index) => {
     const { cardCount, correct } = this.props.quizControl
-    const { deck } = this.props
+    const { deck, quizChangeScore, quizChangeCorrect, quizChangeCardCount } = this.props
     if(deck.questions.length >= cardCount) {
       const newCorrect = correct + index
       const newCardCount = cardCount + 1
-      const newScore = (correct/deck.questions.length)*100
-      this.props.quizChange(newCorrect, newCardCount, newScore)
-      console.log(this.state)
+      const newScore = Math.round((newCorrect/deck.questions.length)*100)
+      console.log(newScore)
+      quizChangeCorrect(newCorrect)
+      quizChangeCardCount(newCardCount)
+      quizChangeScore(newScore)
+    } else {
+      const finalScore = this.props.quizControl.score
+      console.log(finalScore)
+      Alert.alert(
+        'FINAL SCORE',
+        finalScore,
+        [
+          {text: 'OK', onPress: () => {
+              console.log('OK Pressed!')
+              quizChangeCorrect(0)
+              quizChangeCardCount(1)
+              quizChangeScore(0)
+          }}
+        ]
+      )
     }
-    console.log('DONE')
-    console.log(this.state)
   }
 
   onChangeQuestionState = () => {
-    const { quizState } = this.props.quizControl
+    const { questionState } = this.props.quizControl
+    const { quizChangeQuestionState } = this.props
     if(questionState === 'question') {
-      this.setState({ questionState: 'answer'})
+      quizChangeQuestionState('answer')
     } else if(questionState === 'answer') {
-      this.setState({ questionState: 'question'})
+      quizChangeQuestionState('question')
     }
-    console.log(this.state)
   }
 
   render () {
     console.log(this.props)
-    console.log(this.props.deck)
-    console.log(this.props.deck.questions)
-    console.log(this.state)
     return (
       <View style={styles.container}>
         <View>
           <Text>
-            {`${this.state.cardCount}/${this.props.deck.questions.length}`}
+            {`${this.props.quizControl.cardCount}/${this.props.deck.questions.length}`}
           </Text>
         </View>
         <TouchableOpacity
@@ -47,10 +60,10 @@ class Quiz extends Component {
           >
           <View style={styles.deck}>
             <Text style={styles.title}>
-              {this.state.questionState === 'question' ?
-                 this.props.deck.questions[this.state.cardCount-1].question
+              {this.props.quizControl.questionState === 'question' ?
+                 this.props.deck.questions[this.props.quizControl.cardCount-1].question
                  :
-                 this.props.deck.questions[this.state.cardCount-1].answer
+                 this.props.deck.questions[this.props.quizControl.cardCount-1].answer
             }
             </Text>
           </View>
@@ -124,7 +137,7 @@ const styles = StyleSheet.create({
   }
 })
 
-function mapStateToProps ({ decks }, { navigation }, { quizControl }) {
+function mapStateToProps ({ decks, quizControl }, { navigation }) {
   const decksAsArray = Object.keys(decks).map((title) => (decks[title]))
   const decksAsArrayFiltered = decksAsArray.filter((deck) => (deck.title === navigation.state.params.title))[0]
   return {
@@ -136,7 +149,10 @@ function mapStateToProps ({ decks }, { navigation }, { quizControl }) {
 function mapDispatchToProps (dispatch) {
   return {
 // here all the actions are mapped to props.
-    quizChange: (data) => dispatch(quizChange(data)),
+    quizChangeCorrect: (data) => dispatch(quizChangeCorrect(data)),
+    quizChangeScore: (data) => dispatch(quizChangeScore(data)),
+    quizChangeQuestionState: (data) => dispatch(quizChangeQuestionState(data)),
+    quizChangeCardCount: (data) => dispatch(quizChangeCardCount(data)),
   }
 }
 

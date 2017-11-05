@@ -81,10 +81,11 @@ const styles = StyleSheet.create({
   }
 })
 
-function mapStateToProps ({ decks }) {
+function mapStateToProps ({ decks }, { quizControl }) {
   const decksAsArray = Object.keys(decks).map((title) => (decks[title]))
   return {
     decks: decksAsArray,
+    quizControl
   }
 }
 

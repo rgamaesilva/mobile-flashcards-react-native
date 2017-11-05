@@ -4,5 +4,5 @@ import quizControl from './quizReducer'
 
 export default combineReducers({
   decks,
-  quizControl
+  quizControl,
 })
