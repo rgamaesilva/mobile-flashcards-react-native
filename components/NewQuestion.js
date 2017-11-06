@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import {
-        StyleSheet,
-        View,
-        Text,
-        TextInput,
-        TouchableOpacity,
-        Platform
+    StyleSheet,
+    View,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    Platform
 } from 'react-native'
 import { NavigationActions } from 'react-navigation'
 import { purple, white } from '../utils/colors'
@@ -39,7 +39,6 @@ class NewQuestion extends Component {
 
   render () {
     const { textInput } = this.state
-    console.log(this.props)
     return (
       <View style={styles.container}>
         <View>

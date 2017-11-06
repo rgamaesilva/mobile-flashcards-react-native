@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import {
-        View,
-        Text,
-        StyleSheet,
-        TouchableOpacity
+    View,
+    Text,
+    StyleSheet,
+    TouchableOpacity
 } from 'react-native'
 import { NavigationActions } from 'react-navigation'
 import * as api from '../utils/api'
@@ -18,7 +18,11 @@ class Deck extends Component {
     api.removeDeck(deck.title).then(() => {
       removeDeck(deck.title)
     })
-    navigation.goBack()
+    navigation.dispatch(NavigationActions.navigate(
+      {
+        routeName: 'DecksList',
+      }
+    ))
   }
 
   render () {
@@ -124,7 +128,7 @@ const styles = StyleSheet.create({
   }
 })
 
-function mapStateToProps ({ decks }, { navigation }) {
+function mapStateToProps ({ decks } = {}, { navigation }) {
   const decksAsArray = Object.keys(decks).map((title) => (decks[title]))
   const decksAsArrayFiltered = decksAsArray.filter((deck) => (deck.title === navigation.state.params.title))[0]
   return {

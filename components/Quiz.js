@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import {
-        View,
-        Text,
-        TouchableOpacity,
-        StyleSheet,
-        Alert
+    View,
+    Text,
+    TouchableOpacity,
+    StyleSheet,
+    Alert
 } from 'react-native'
 import { connect } from 'react-redux'
 import { NavigationActions } from 'react-navigation'
@@ -25,27 +25,14 @@ class Quiz extends Component {
     }
   }
 
-  onRestartQuiz = () => {
+  onRestartOrBackToDeck = (component) => {
     const { quizChangeScore, quizChangeCorrect, quizChangeCardCount, navigation, deck } = this.props
     quizChangeCorrect(0)
     quizChangeCardCount(1)
     quizChangeScore(0)
     navigation.dispatch(NavigationActions.navigate(
       {
-        routeName: 'Quiz',
-        params: { title: deck.title }
-      }
-    ))
-  }
-
-  onBackToDeck = () => {
-    const { quizChangeScore, quizChangeCorrect, quizChangeCardCount, navigation, deck } = this.props
-    quizChangeCorrect(0)
-    quizChangeCardCount(1)
-    quizChangeScore(0)
-    navigation.dispatch(NavigationActions.navigate(
-      {
-        routeName: 'Deck',
+        routeName: component,
         params: { title: deck.title }
       }
     ))
@@ -102,13 +89,13 @@ class Quiz extends Component {
             <Text style={styles.title}>{`YOU GUESSED ${quizControl.score}% OF THE QUESTIONS CORRECT !!`}</Text>
             <TouchableOpacity
               style={styles.correctButton}
-              onPress={() => this.onRestartQuiz()}
+              onPress={() => this.onRestartOrBackToDeck('Quiz')}
               >
               <Text style={styles.textWhite}>RESTART QUIZ</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.incorrectButton}
-              onPress={() => this.onBackToDeck()}
+              onPress={() => this.onRestartOrBackToDeck('Deck')}
               >
               <Text style={styles.textWhite}>BACK TO DECK</Text>
             </TouchableOpacity>

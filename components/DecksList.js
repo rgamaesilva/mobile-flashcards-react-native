@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import {
-        View,
-        Text,
-        StyleSheet,
-        ScrollView,
-        FlatList,
-        TouchableOpacity
+    View,
+    Text,
+    StyleSheet,
+    ScrollView,
+    FlatList,
+    TouchableOpacity
 } from 'react-native'
 import { NavigationActions } from 'react-navigation'
 import * as api from '../utils/api'
