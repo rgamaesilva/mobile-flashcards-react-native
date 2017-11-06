@@ -1,5 +1,12 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, ScrollView, FlatList, TouchableOpacity } from 'react-native'
+import {
+        View,
+        Text,
+        StyleSheet,
+        ScrollView,
+        FlatList,
+        TouchableOpacity
+} from 'react-native'
 import { NavigationActions } from 'react-navigation'
 import * as api from '../utils/api'
 import { purple, white, gray, red, black } from '../utils/colors'
@@ -7,12 +14,13 @@ import { connect } from 'react-redux'
 import { getAllDecks } from '../actions/deckActions'
 
 class DecksList extends Component {
-//renderItem is what is going to be rendered in FlaList.
+//renderItem is what is going to be rendered in FlatList.
   renderItem = ({ item }) => {
+    const { navigation } = this.props
     return (
       <TouchableOpacity
         key={item.title}
-        onPress={() => this.props.navigation.dispatch(NavigationActions.navigate(
+        onPress={() => navigation.dispatch(NavigationActions.navigate(
           {
             routeName: 'Deck',
             params: { title: item.title }
@@ -28,19 +36,20 @@ class DecksList extends Component {
   }
 
   componentDidMount () {
+    const { getAllDecks } = this.props
     api.getAllDecks().then((results) => {
       const parsedResults = JSON.parse(results)
-      this.props.getAllDecks(parsedResults)
+      getAllDecks(parsedResults)
     })
   }
 
   render () {
-    console.log(this.props)
+    const { decks } = this.props
     return (
-      this.props.decks.length > 0 ?
+      decks.length > 0 ?
       <View style={styles.container}>
         <FlatList
-          data={this.props.decks}
+          data={decks}
           renderItem={this.renderItem}
         />
       </View>

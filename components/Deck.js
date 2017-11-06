@@ -1,6 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import {
+        View,
+        Text,
+        StyleSheet,
+        TouchableOpacity
+} from 'react-native'
 import { NavigationActions } from 'react-navigation'
 import * as api from '../utils/api'
 import { purple, white, gray, black, red } from '../utils/colors'
@@ -9,27 +14,30 @@ import { removeDeck } from '../actions/deckActions'
 class Deck extends Component {
 
   onRemoveDeck = () => {
-    api.removeDeck(this.props.deck.title).then(() => {
-      this.props.removeDeck(this.props.deck.title)
+    const { deck, removeDeck, navigation } = this.props
+    api.removeDeck(deck.title).then(() => {
+      removeDeck(deck.title)
     })
-    this.props.navigation.goBack()
+    navigation.goBack()
   }
 
   render () {
+
+    const { deck, navigation } = this.props
     return (
       <View style={styles.container}>
-        {this.props.deck &&
+        {deck &&
           <View style={styles.container}>
             <View style={styles.deck}>
-              <Text style={styles.title}>{this.props.deck.title}</Text>
-              <Text style={styles.cards}>{`${this.props.deck.questions.length} cards`}</Text>
+              <Text style={styles.title}>{deck.title}</Text>
+              <Text style={styles.cards}>{`${deck.questions.length} cards`}</Text>
             </View>
             <TouchableOpacity
               style={styles.addButton}
-              onPress={() => this.props.navigation.dispatch(NavigationActions.navigate(
+              onPress={() => navigation.dispatch(NavigationActions.navigate(
                 {
                   routeName: 'NewQuestion',
-                  params: { title: this.props.deck.title }
+                  params: { title: deck.title }
                 }
               ))}
               >
@@ -37,10 +45,10 @@ class Deck extends Component {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.startQuiz}
-              onPress={() => this.props.navigation.dispatch(NavigationActions.navigate(
+              onPress={() => navigation.dispatch(NavigationActions.navigate(
                 {
                   routeName: 'Quiz',
-                  params: { title: this.props.deck.title }
+                  params: { title: deck.title }
                 }
               ))}
               >

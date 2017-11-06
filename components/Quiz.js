@@ -1,5 +1,11 @@
 import React, { Component } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native'
+import {
+        View,
+        Text,
+        TouchableOpacity,
+        StyleSheet,
+        Alert
+} from 'react-native'
 import { connect } from 'react-redux'
 import { NavigationActions } from 'react-navigation'
 import { quizChangeCorrect, quizChangeCardCount, quizChangeScore, quizChangeQuestionState } from '../actions/quizActions'
@@ -8,78 +14,106 @@ import { purple, white, gray, black, red, green } from '../utils/colors'
 class Quiz extends Component {
 
   onChangeCard = (index) => {
-    const { cardCount, correct } = this.props.quizControl
-    const { deck, quizChangeScore, quizChangeCorrect, quizChangeCardCount } = this.props
-    if(deck.questions.length >= cardCount) {
-      const newCorrect = correct + index
-      const newCardCount = cardCount + 1
+    const { deck, quizChangeScore, quizChangeCorrect, quizChangeCardCount, quizControl } = this.props
+    if(deck.questions.length >= quizControl.cardCount) {
+      const newCorrect = quizControl.correct + index
+      const newCardCount = quizControl.cardCount + 1
       const newScore = Math.round((newCorrect/deck.questions.length)*100)
-      console.log(newScore)
       quizChangeCorrect(newCorrect)
       quizChangeCardCount(newCardCount)
       quizChangeScore(newScore)
-    } else {
-      const finalScore = this.props.quizControl.score
-      console.log(finalScore)
-      Alert.alert(
-        'FINAL SCORE',
-        finalScore,
-        [
-          {text: 'OK', onPress: () => {
-              console.log('OK Pressed!')
-              quizChangeCorrect(0)
-              quizChangeCardCount(1)
-              quizChangeScore(0)
-          }}
-        ]
-      )
     }
   }
 
+  onRestartQuiz = () => {
+    const { quizChangeScore, quizChangeCorrect, quizChangeCardCount, navigation, deck } = this.props
+    quizChangeCorrect(0)
+    quizChangeCardCount(1)
+    quizChangeScore(0)
+    navigation.dispatch(NavigationActions.navigate(
+      {
+        routeName: 'Quiz',
+        params: { title: deck.title }
+      }
+    ))
+  }
+
+  onBackToDeck = () => {
+    const { quizChangeScore, quizChangeCorrect, quizChangeCardCount, navigation, deck } = this.props
+    quizChangeCorrect(0)
+    quizChangeCardCount(1)
+    quizChangeScore(0)
+    navigation.dispatch(NavigationActions.navigate(
+      {
+        routeName: 'Deck',
+        params: { title: deck.title }
+      }
+    ))
+  }
+
   onChangeQuestionState = () => {
-    const { questionState } = this.props.quizControl
-    const { quizChangeQuestionState } = this.props
-    if(questionState === 'question') {
+    const { quizChangeQuestionState, quizControl } = this.props
+    if(quizControl.questionState === 'question') {
       quizChangeQuestionState('answer')
-    } else if(questionState === 'answer') {
+    } else if(quizControl.questionState === 'answer') {
       quizChangeQuestionState('question')
     }
   }
 
   render () {
-    console.log(this.props)
+    const { deck, quizControl } = this.props
     return (
       <View style={styles.container}>
-        <View>
-          <Text>
-            {`${this.props.quizControl.cardCount}/${this.props.deck.questions.length}`}
-          </Text>
-        </View>
-        <TouchableOpacity
-          onPress={this.onChangeQuestionState}
-          >
-          <View style={styles.deck}>
-            <Text style={styles.title}>
-              {this.props.quizControl.questionState === 'question' ?
-                 this.props.deck.questions[this.props.quizControl.cardCount-1].question
-                 :
-                 this.props.deck.questions[this.props.quizControl.cardCount-1].answer
-            }
-            </Text>
+        {deck.questions.length >= quizControl.cardCount ?
+          <View  style={styles.container}>
+            <View>
+              <Text>
+                {`${quizControl.cardCount}/${deck.questions.length}`}
+              </Text>
+            </View>
+            <TouchableOpacity
+              onPress={this.onChangeQuestionState}
+              >
+              <View style={styles.deck}>
+                <Text style={styles.title}>
+                  {quizControl.questionState === 'question' ?
+                     deck.questions[quizControl.cardCount-1].question
+                     :
+                     deck.questions[quizControl.cardCount-1].answer
+                   }
+                </Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.correctButton}
+              onPress={() => this.onChangeCard(1)}
+              >
+              <Text>CORRECT</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.incorrectButton}
+              onPress={() => this.onChangeCard(0)}
+              >
+              <Text style={styles.textWhite}>INCORRECT</Text>
+            </TouchableOpacity>
           </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.correctButton}
-          onPress={() => this.onChangeCard(1)}
-          >
-          <Text>CORRECT</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.incorrectButton}
-          onPress={() => this.onChangeCard(0)}
-          >
-          <Text style={styles.textWhite}>INCORRECT</Text>
-        </TouchableOpacity>
+          :
+          <View style={styles.container}>
+            <Text style={styles.title}>{`YOU GUESSED ${quizControl.score}% OF THE QUESTIONS CORRECT !!`}</Text>
+            <TouchableOpacity
+              style={styles.correctButton}
+              onPress={() => this.onRestartQuiz()}
+              >
+              <Text style={styles.textWhite}>RESTART QUIZ</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.incorrectButton}
+              onPress={() => this.onBackToDeck()}
+              >
+              <Text style={styles.textWhite}>BACK TO DECK</Text>
+            </TouchableOpacity>
+          </View>
+        }
       </View>
     )
   }

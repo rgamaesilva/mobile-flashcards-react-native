@@ -19,16 +19,18 @@ class NewDeck extends Component {
   }
 
   onAddDeck = () => {
-    if(this.state.textInput === "") {
+    const { textInput } = this.state
+    const { addDeck, navigation } = this.props
+    if(textInput === "") {
       alert('Please type the title of the Deck')
       return
     }
-    api.addApiDeck(this.state.textInput).then(() => {
-      this.props.addDeck(this.state.textInput)
-      this.props.navigation.dispatch(NavigationActions.navigate(
+    api.addApiDeck(textInput).then(() => {
+      addDeck(textInput)
+      navigation.dispatch(NavigationActions.navigate(
         {
           routeName: 'Deck',
-          params: { title: this.state.textInput }
+          params: { title: textInput }
         }
       ))
       this.setState({ textInput: '' })
@@ -36,6 +38,7 @@ class NewDeck extends Component {
   }
 
   render () {
+    const { textInput } = this.state
     return (
       <View style={styles.container}>
         <View>
@@ -43,7 +46,7 @@ class NewDeck extends Component {
         </View>
         <TextInput
           style={styles.input}
-          value={this.state.textInput}
+          value={textInput}
           onChangeText={(text) => this.setState({ textInput: text })}
           placeholder='Deck Title'
         />

@@ -1,5 +1,12 @@
 import React, { Component } from 'react'
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, Platform } from 'react-native'
+import {
+        StyleSheet,
+        View,
+        Text,
+        TextInput,
+        TouchableOpacity,
+        Platform
+} from 'react-native'
 import { NavigationActions } from 'react-navigation'
 import { purple, white } from '../utils/colors'
 import * as api from '../utils/api'
@@ -13,21 +20,26 @@ class NewQuestion extends Component {
   }
 
   onAddQuestion = () => {
-    if(this.state.questionInput === "") {
+    const { questionInput, answerInput } = this.state
+    const { deck, navigation, addCard } = this.props
+    if(questionInput === "") {
       alert('Please type a Question')
       return
-    } else if(this.state.answerInput === "") {
+    } else if(answerInput === "") {
       alert('Please type an ANSWER')
     }
-    const card = {question: this.state.questionInput, answer: this.state.answerInput}
-    api.addApiCard(this.props.deck.title, card).then(() => {
-      this.props.addCard(this.props.deck.title, card)
-      this.props.navigation.goBack()
+    const card = {question: questionInput, answer: answerInput}
+    api.addApiCard(deck.title, card).then(() => {
+      console.log(deck.title)
+      console.log(card)
+      addCard(deck.title, card)
+      navigation.goBack()
       this.setState({ questionInput: '', answerInput: ''})
     })
   }
 
   render () {
+    const { textInput } = this.state
     console.log(this.props)
     return (
       <View style={styles.container}>
@@ -36,13 +48,13 @@ class NewQuestion extends Component {
         </View>
         <TextInput
           style={styles.input}
-          value={this.state.textInput}
+          value={textInput}
           onChangeText={(text) => this.setState({ questionInput: text })}
           placeholder='Type the question here!'
         />
         <TextInput
           style={styles.input}
-          value={this.state.textInput}
+          value={textInput}
           onChangeText={(text) => this.setState({ answerInput: text })}
           placeholder='Type the answer here!'
         />

@@ -1,3 +1,16 @@
+This is project for UDACITY.
+
+The project is a Mobile FlashCards, that you can create Decks of cards, add some cards to the deck, and test the memory gettin a score after the quiz is done.
+
+To Run Clone the repository and run npm install or yarn install
+
+On the main directory run yarn start
+
+The app was created for iOs an tested on such device.
+
+The project was created with react-native-create-app, for additional information please read below
+
+
 This project was bootstrapped with [Create React Native App](https://github.com/react-community/create-react-native-app).
 
 Below you'll find information about performing common tasks. The most recent version of this guide is available [here](https://github.com/react-community/create-react-native-app/blob/master/react-native-scripts/template/README.md).
