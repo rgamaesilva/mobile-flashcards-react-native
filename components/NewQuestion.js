@@ -30,9 +30,8 @@ class NewQuestion extends Component {
     }
     const card = {question: questionInput, answer: answerInput}
     api.addApiCard(deck.title, card).then(() => {
-      console.log(deck.title)
-      console.log(card)
-      addCard(deck.title, card)
+      const data = {title: deck.title, card}
+      addCard(data)
       navigation.goBack()
       this.setState({ questionInput: '', answerInput: ''})
     })
